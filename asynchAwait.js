@@ -27,6 +27,7 @@ async function getStat(){
                 "league_name": jsonRes[idx].league_name
             })
             let makeTeamUrl = `https://apiv2.apifootball.com/?action=get_teams&league_id=${jsonRes[idx].league_id}&APIkey=${key}`
+            let makeOverAllLeaguPositionUrl = `https://apiv2.apifootball.com/?action=get_standings&league_id=${jsonRes[idx].league_id}&APIkey=${key}`
             var res = await fetch(makeTeamUrl)
             res = await res.json()
             let tdx =0
@@ -40,6 +41,23 @@ async function getStat(){
             }
             try{
                 fs.writeFileSync('team_asynch.json', JSON.stringify(teamRes))
+            }
+            catch(e){
+                console.log(e)
+            }
+            var res = await fetch(makeOverAllLeaguPositionUrl)
+            res = await res.json()
+            let odx =0
+            var leaguePositionRes = []
+            while(res[odx]){
+               leaguePositionRes.push({
+                   "league_name": res[odx].league_name,
+                   "overall_league_position": res[odx].overall_league_position 
+               }) 
+               odx++
+            }
+            try{
+                fs.writeFileSync('overall_asynch.json', JSON.stringify(leaguePositionRes))
             }
             catch(e){
                 console.log(e)
